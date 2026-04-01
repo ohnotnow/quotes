@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -86,7 +87,29 @@ func fetchQuotes(db *sql.DB, search string, limit, offset int) ([]Quote, error) 
 	return quotes, rows.Err()
 }
 
+func trimQuotes(s string) string {
+	s = strings.TrimSpace(s)
+	pairs := [][2]rune{
+		{'"', '"'},
+		{'\'', '\''},
+		{'\u201C', '\u201D'}, // " "
+		{'\u2018', '\u2019'}, // ' '
+		{'\u00AB', '\u00BB'}, // « »
+	}
+	for _, p := range pairs {
+		if len([]rune(s)) >= 2 {
+			runes := []rune(s)
+			if runes[0] == p[0] && runes[len(runes)-1] == p[1] {
+				s = string(runes[1 : len(runes)-1])
+				s = strings.TrimSpace(s)
+			}
+		}
+	}
+	return s
+}
+
 func insertQuote(db *sql.DB, who, body string) error {
+	body = trimQuotes(body)
 	_, err := db.Exec("INSERT INTO quotes (who, body, created_at) VALUES (?, ?, ?)", who, body, time.Now())
 	return err
 }

@@ -577,6 +577,27 @@ func main() {
 	}
 	defer db.Close()
 
+	// CLI quick search: `quotes darwin` or `quotes species that survives`
+	if len(os.Args) > 1 {
+		query := strings.Join(os.Args[1:], " ")
+		quotes, err := fetchQuotes(db, query, 100, 0)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		if len(quotes) == 0 {
+			fmt.Fprintf(os.Stderr, "No quotes matching %q\n", query)
+			os.Exit(1)
+		}
+		for i, q := range quotes {
+			if i > 0 {
+				fmt.Println()
+			}
+			fmt.Printf("Who:   %s\nQuote: %s\n", q.Who, q.Body)
+		}
+		return
+	}
+
 	p := tea.NewProgram(initialModel(db), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
