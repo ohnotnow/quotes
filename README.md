@@ -1,14 +1,14 @@
 # quotes
 
-I used to keep quotes in MacOS sticky notes. Hundreds of them, piling up across desktops, impossible to search. This is the replacement: a small terminal app that stores quotes in SQLite and lets me actually find things again.
+I used to keep quotes in MacOS sticky notes.  It was not the best experience.
 
 ## What it does
 
-Two modes. Run `quotes` with no arguments and you get a full-screen TUI for browsing, searching, and adding new quotes. Run `quotes darwin` or `quotes species that survives` and it prints matches straight to stdout so you can pipe them or just grab what you need.
-
-It strips surrounding quotation marks automatically (straight, curly, guillemets), so you can paste from the web without cleaning up first.
+Two modes. Run `quotes` with no arguments and you get a TUI for browsing, searching, and adding new quotes. Run `quotes darwin` or `quotes some famous words` and it'll just print out any matches on the 'who' or 'quote' fields.
 
 The database lives at `~/.quotes/quotes.db` and gets created on first run.
+
+![Screenshot](screenshot.png)
 
 ## Installation
 
@@ -20,8 +20,6 @@ Grab the latest binary for your platform from the [releases page](https://github
 chmod +x quotes-darwin-arm64
 mv quotes-darwin-arm64 /usr/local/bin/quotes
 ```
-
-Binaries are available for Linux, macOS, and Windows on both amd64 and arm64.
 
 ### Building from source
 
@@ -59,8 +57,6 @@ quotes species that survives
 quotes "responsive to change"
 ```
 
-Searches the quote body and the "who" field. Prints matches to stdout, one per result.
-
 ## Running tests
 
 ```bash
@@ -69,7 +65,7 @@ go test ./...
 
 ## Contributing
 
-Fork it, make your changes, run `go build .` to check it compiles, open a PR. That's it.
+Fork it, make your changes, run `go build .` to check it compiles, open a PR.
 
 ## Licence
 
