@@ -10,22 +10,27 @@ It strips surrounding quotation marks automatically (straight, curly, guillemets
 
 The database lives at `~/.quotes/quotes.db` and gets created on first run.
 
-## Prerequisites
+## Installation
 
-- Go 1.25+
+### Pre-built binaries
 
-## Getting started
+Grab the latest binary for your platform from the [releases page](https://github.com/ohnotnow/quotes/releases). Download it, make it executable, and put it somewhere on your `$PATH`:
+
+```bash
+chmod +x quotes-darwin-arm64
+mv quotes-darwin-arm64 /usr/local/bin/quotes
+```
+
+Binaries are available for Linux, macOS, and Windows on both amd64 and arm64.
+
+### Building from source
+
+Requires Go 1.25+.
 
 ```bash
 git clone https://github.com/ohnotnow/quotes.git
 cd quotes
 go build -o quotes .
-```
-
-Move the binary somewhere on your `$PATH` if you like:
-
-```bash
-mv quotes /usr/local/bin/
 ```
 
 ## Usage
