@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -217,6 +218,15 @@ func (m model) updateList(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			m.deleteConfirm = false // default to "No"
 			m.mode = modeConfirmDelete
 		}
+	case "c":
+		if len(m.quotes) > 0 && m.cursor < len(m.quotes) {
+			q := m.quotes[m.cursor]
+			if err := clipboard.WriteAll(fmt.Sprintf("\"%s\" — %s", q.Body, q.Who)); err != nil {
+				m.flash = "Could not copy to clipboard"
+			} else {
+				m.flash = "Copied to clipboard!"
+			}
+		}
 	case "enter":
 		if len(m.quotes) > 0 && m.cursor < len(m.quotes) {
 			m.mode = modeView
@@ -292,6 +302,15 @@ func (m model) updateAdd(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 func (m model) updateView(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
+	case "c":
+		if m.cursor < len(m.quotes) {
+			q := m.quotes[m.cursor]
+			if err := clipboard.WriteAll(fmt.Sprintf("\"%s\" — %s", q.Body, q.Who)); err != nil {
+				m.flash = "Could not copy to clipboard"
+			} else {
+				m.flash = "Copied to clipboard!"
+			}
+		}
 	case "esc", "q", "enter":
 		m.mode = modeList
 	}
@@ -406,7 +425,7 @@ func (m model) viewList() string {
 	b.WriteString("\n")
 
 	// Help
-	b.WriteString(helpStyle.Render("  ↑↓/jk navigate • ←→/hl page • / search • a add • d delete • enter view • q quit"))
+	b.WriteString(helpStyle.Render("  ↑↓/jk navigate • ←→/hl page • / search • a add • d delete • c copy • enter view • q quit"))
 
 	return b.String()
 }
@@ -518,7 +537,7 @@ func (m model) viewDetail() string {
 	b.WriteString("\n")
 	b.WriteString(dimStyle.Render(fmt.Sprintf("  Added: %s", q.CreatedAt.Format("2 Jan 2006 15:04"))))
 	b.WriteString("\n\n")
-	b.WriteString(helpStyle.Render("  esc/enter/q to go back"))
+	b.WriteString(helpStyle.Render("  c copy • esc/enter/q to go back"))
 
 	return b.String()
 }
